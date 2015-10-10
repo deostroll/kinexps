@@ -28,7 +28,7 @@ module.exports = function(grunt) {
         src: 'Gruntfile.js'
       },
       js: {
-        src: ['app.js']
+        src: ['src/*.js']
       }
     },
     watch: {
@@ -36,25 +36,31 @@ module.exports = function(grunt) {
         files: '<%= jshint.gruntfile.src %>',
         tasks: ['jshint:gruntfile']
       },
-      www: {
-        files: ['app.js', 'index.html'],
+      js: {
+        files: ['src/*.js'],
         tasks: ['jshint:js'],
         options: {
-          livereload: true
+          livereload: '<%= connect.options.livereload'
         }
       }
     },
     connect: {
       options: {
         port: 9000,
-        open: true,
-        keepalive: true
+        livereload: 3582
       },
       server: {
         options: {
-          middleware: function() {
+          open: false,
+          middleware: function(connect) {
+            var app  = connect();
+            connect.static = require('./node_modules/grunt-contrib-connect/node_modules/serve-static');
+            app.use(connect.static('src'));
+            app.use('/bower_components', connect.static('bower_components'));
+            var lr = require('./node_modules/grunt-contrib-connect/node_modules/connect-livereload');
             return [
-              require('connect-livereload')()
+              lr(),
+              app
             ];
           }
         }
@@ -62,7 +68,7 @@ module.exports = function(grunt) {
     },
     wiredep: {
       www: {
-        src: 'index.html'
+        src: ['src/*.html']
       },
       bower: {
         src: 'bower.json',
@@ -76,11 +82,7 @@ module.exports = function(grunt) {
 
   // These plugins provide necessary tasks.
   
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-connect');
-  grunt.loadNpmTasks('grunt-wiredep');
-  grunt.loadNpmTasks('grunt-concurrent');
+  require('load-grunt-tasks')(grunt);
 
   // Default task.
   grunt.registerTask('default', [
