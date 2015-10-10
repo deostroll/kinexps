@@ -1,0 +1,21 @@
+{
+  "name": "kinetic",
+  "version": "0.0.0",
+  "authors": [
+    "dostroll <deostroll@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "kineticjs": "~5.1.0",
+    "angular": "~1.4.7",
+    "angular-route": "~1.4.7",
+    "jquery": "~2.1.4"
+  }
+}
